@@ -1,9 +1,15 @@
 # Da'Maps
 
 The maps behind **Da'Maps**, the hand-drawn DragonRealms map view in
-[Lichborne](https://github.com/Kaesken/lichborne). Lichborne downloads this
-folder from GitHub, so a map fixed here reaches players without a new
-Lichborne release.
+[Lichborne](https://github.com/Kaesken/lichborne).
+
+Da'Maps is built on the [Genie Maps](https://github.com/GenieClient/Maps), the
+work of the Genie Maps team and everyone who has contributed to them over the
+years. They're open source, and we're grateful they are: without them, Da'Maps
+wouldn't exist.
+
+Lichborne downloads this folder from GitHub, so a map fixed here reaches
+players without a new Lichborne release.
 
 ## What's here
 
