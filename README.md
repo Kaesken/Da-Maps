@@ -17,6 +17,17 @@ Lichborne release.
   each one in its map's `art` list, so a map and its picture change together.
   Push the `.damap` and its picture in the same commit.
 
+## The DaMaps Editor
+
+Download the newest **DaMaps Editor** from
+[Releases](https://github.com/Kaesken/Da-Maps/releases) (`DaMaps-Editor-Setup-<version>.exe`).
+It installs for your Windows user, and Settings → Apps uninstalls it. Once
+installed, it checks for new versions itself (Help → Check for updates) and
+can update in place. Your maps, kept in `Documents\DaMaps`, are never touched
+by installing, updating or uninstalling. Windows may warn that it doesn't
+recognise the program, because it isn't code signed: click **More info** →
+**Run anyway**.
+
 ## Getting the maps in Lichborne
 
 Open the map panel, pick **Da'Maps**, and click **Download Da'Maps**. To pick
