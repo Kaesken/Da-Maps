@@ -1,0 +1,3 @@
+# Pictures are left out of the download zip Lichborne fetches for the maps:
+# each one is fetched on its own, the first time a player opens its map.
+art/** export-ignore

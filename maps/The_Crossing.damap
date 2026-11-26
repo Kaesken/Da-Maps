@@ -1572,5 +1572,8 @@
   {"text":"The Crossing","x":32,"y":-590,"z":0},
   {"text":"Tenderfoot Inn","x":154,"y":-611,"z":0},
   {"text":"Rear Entrance to NTR","x":35,"y":-779,"z":0}
+ ],
+ "art": [
+  {"z":0,"file":"Map1_Crossing.png","x":-450,"y":-810,"scale":3,"width":4530,"height":4680}
  ]
 }
