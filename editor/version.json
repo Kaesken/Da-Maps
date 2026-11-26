@@ -1,8 +1,8 @@
 {
- "version": "1.3.1",
+ "version": "1.3.2",
  "electron": "45.2.2",
- "size": 435429,
- "sha256": "95dc136ef6b629c9de0691121b3e22bb2cd1fede0ac5211983dae9720ef179a4",
- "notes": "New scroll-map icon",
- "full": true
+ "size": 436560,
+ "sha256": "1d1fbc8cecbde6630308ad30c0ea2f8258872395e7ff678732260d228bf5c75a",
+ "notes": "Fixed updating.",
+ "full": false
 }
