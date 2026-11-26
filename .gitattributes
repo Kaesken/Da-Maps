@@ -1,3 +1,6 @@
 # Pictures are left out of the download zip Lichborne fetches for the maps:
 # each one is fetched on its own, the first time a player opens its map.
 art/** export-ignore
+
+# The DaMaps Editor (its small update) is not part of the maps download either.
+editor/** export-ignore

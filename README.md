@@ -28,6 +28,13 @@ by installing, updating or uninstalling. Windows may warn that it doesn't
 recognise the program, because it isn't code signed: click **More info** →
 **Run anyway**.
 
+To publish a new editor version: raise `version` in
+`tools/damaps-editor/package.json` on Lichborne's `damaps` branch, then here open
+**Actions → Publish DaMaps Editor → Run workflow**. GitHub builds the editor,
+makes the release with the installer, and commits `editor/` (the small update
+installed editors pick up by themselves). `editor/` is left out of Lichborne's
+maps download.
+
 ## Getting the maps in Lichborne
 
 Open the map panel, pick **Da'Maps**, and click **Download Da'Maps**. To pick

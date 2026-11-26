@@ -1,0 +1,94 @@
+# Publish DaMaps Editor — run it from the Actions tab ("Run workflow").
+#
+# Builds the editor from Lichborne's `damaps` branch (Kaesken/Lichborne), then:
+#  1. makes the release `editor-v<version>` here with the Windows installer
+#     attached (the full download, for new installs);
+#  2. commits editor/app.asar and editor/version.json, the small update every
+#     installed editor checks for and swaps in by itself.
+# The version is tools/damaps-editor/package.json's, so raise it there first.
+# Running it twice for one version stops at step 1 instead of overwriting.
+name: Publish DaMaps Editor
+on:
+  workflow_dispatch:
+    inputs:
+      notes:
+        description: "What's new (shown in the editor's update message and on the release)"
+        required: false
+        default: ''
+permissions:
+  contents: write
+concurrency: editor-publish
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: da-maps
+      - uses: actions/checkout@v4
+        with:
+          repository: Kaesken/Lichborne
+          ref: damaps
+          path: lichborne
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      # --ignore-scripts: the editor build needs none of the install scripts
+      # (Electron's own download, or better-sqlite3, which is Lichborne's).
+      - name: Install build tools
+        working-directory: lichborne
+        run: npm ci --no-audit --no-fund --ignore-scripts
+      - name: Build the editor and its installer
+        working-directory: lichborne
+        run: node tools/damaps-editor/build.mjs --pack --installer
+      - name: Version
+        id: v
+        working-directory: lichborne
+        run: |
+          echo "version=$(node -p "require('./tools/damaps-editor/package.json').version")" >> "$GITHUB_OUTPUT"
+          echo "electron=$(node -p "require('./node_modules/electron/package.json').version")" >> "$GITHUB_OUTPUT"
+      - name: Make the release
+        working-directory: da-maps
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.v.outputs.version }}
+          NOTES: ${{ inputs.notes }}
+        run: |
+          tag="editor-v$VERSION"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "::error::$tag already exists. Raise the version in tools/damaps-editor/package.json first."
+            exit 1
+          fi
+          body="Download **DaMaps-Editor-Setup-$VERSION.exe** below and run it. Windows may say it doesn't recognise the program (it isn't code signed): click **More info** → **Run anyway**.
+
+          Already have the editor? It updates itself: Help → Check for updates.
+
+          Your maps in Documents\\DaMaps are never touched by installing, updating or uninstalling."
+          if [ -n "$NOTES" ]; then body="$NOTES
+
+          $body"; fi
+          gh release create "$tag" "../lichborne/tools/damaps-editor/release/DaMaps-Editor-Setup-$VERSION.exe" \
+            --title "DaMaps Editor $VERSION" --notes "$body" --target main
+      - name: Commit the small update
+        working-directory: da-maps
+        env:
+          VERSION: ${{ steps.v.outputs.version }}
+          ELECTRON: ${{ steps.v.outputs.electron }}
+          NOTES: ${{ inputs.notes }}
+        run: |
+          mkdir -p editor
+          cp ../lichborne/tools/damaps-editor/release/win-unpacked/resources/app.asar editor/app.asar
+          node -e '
+            const fs = require("fs"), crypto = require("crypto")
+            const b = fs.readFileSync("editor/app.asar")
+            fs.writeFileSync("editor/version.json", JSON.stringify({
+              version: process.env.VERSION, electron: process.env.ELECTRON, size: b.length,
+              sha256: crypto.createHash("sha256").update(b).digest("hex"), notes: process.env.NOTES,
+            }, null, 1) + "\n")'
+          cat editor/version.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add editor
+          git commit -m "DaMaps Editor $VERSION"
+          git pull --rebase --quiet
+          git push
