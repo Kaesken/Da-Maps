@@ -22,15 +22,15 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           path: da-maps
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           repository: Kaesken/Lichborne
           ref: damaps
           path: lichborne
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
       # --ignore-scripts: the editor build needs none of the install scripts
@@ -38,8 +38,12 @@ jobs:
       - name: Install build tools
         working-directory: lichborne
         run: npm ci --no-audit --no-fund --ignore-scripts
+      - name: Install makensis (builds the installer)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq nsis
       - name: Build the editor and its installer
         working-directory: lichborne
+        env:
+          MAKENSIS: /usr/bin/makensis
         run: node tools/damaps-editor/build.mjs --pack --installer
       - name: Version
         id: v
